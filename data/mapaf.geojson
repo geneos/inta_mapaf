@@ -1,0 +1,25 @@
+{
+"type": "FeatureCollection",
+
+"features": [
+{ "type": "Feature", "id": 0, "properties": { "NAME": "Productores de huevos de Zárate", "TEL": "(212) 514-3700", "URL": "http:\/\/www.oldnycustomhouse.gov\/", "ADRESS1": "1 Bowling Grn", "ADDRESS2": null, "CITY": "New York", "ZIP": 10004.0 }, "geometry": { "type": "Point", "coordinates": [-34.104454,-59.024855] } }
+,
+{ "type": "Feature", "id": 1, "properties": { "NAME": "Horticultores de la región de Salta Grande", "TEL": "(718) 816-4506", "URL": "http:\/\/www.aliceausten.org\/", "ADRESS1": "2 Hylan Blvd", "ADDRESS2": null, "CITY": "Staten Island", "ZIP": 10305.0 }, "geometry": { "type": "Point", "coordinates": [-58.109543323516800,-31.366536331106600] } }
+,
+{ "type": "Feature", "id": 2, "properties": { "NAME": "Pequeños productores porcinos del este mendocino: de la granja al consumidor", "TEL": "(212) 368-5900", "URL": "http:\/\/www.artsandletters.org\/", "ADRESS1": "633 W. 155th St.", "ADDRESS2": null, "CITY": "New York", "ZIP": 10032.0 }, "geometry": { "type": "Point", "coordinates": [-66.61731719970700,-33.21111647241680] } }
+,
+{ "type": "Feature", "id": 3, "properties": { "NAME": "Producción avícola y hortícola  de la Cuenca Carbonífera", "TEL": "(212) 265-1040", "URL": "http:\/\/www.folkartmuseum.org\/", "ADRESS1": "45 West 53rd Street", "ADDRESS2": null, "CITY": "New York", "ZIP": 10019.0 }, "geometry": { "type": "Point", "coordinates": [-72.29175567626950,-51.5565821857762500] } }
+,
+{ "type": "Feature", "id": 4, "properties": { "NAME": "Productores de cerdos de Bahía Blanca y Cnel. Rosales", "TEL": "(212) 363-3200", "URL": "http:\/\/www.ellisisland.org\/", "ADRESS1": "Ellis Island", "ADDRESS2": null, "CITY": "New York", "ZIP": 0.0 }, "geometry": { "type": "Point", "coordinates": [-62.266602516174300,-38.68765367826160] } }
+,
+{ "type": "Feature", "id": 5, "properties": { "NAME": "Producción de leche de cabra y elaboración de quesos "Cuenca Robles"", "TEL": "(212) 769-5100", "URL": "http:\/\/www.amnh.org\/", "ADRESS1": "Central Park West at 79th Street", "ADDRESS2": null, "CITY": "New York", "ZIP": 10024.0 }, "geometry": { "type": "Point", "coordinates": [-63.985420148674100,-27.87774303882600] } }
+,
+{ "type": "Feature", "id": 6, "properties": { "NAME": "Quinteros Unidos", "TEL": "(212) 571-4470", "URL": "http:\/\/www.numismatics.org\/", "ADRESS1": "75 Varick St", "ADDRESS2": "11th Floor", "CITY": "New York", "ZIP": 10013.0 }, "geometry": { "type": "Point", "coordinates": [-58.7177782058710,-34.97093766878000] } }
+,
+{ "type": "Feature", "id": 7, "properties": { "NAME": "Huerteros agroecológicos del Gran San Juan", "TEL": "(212) 249-8950", "URL": "http:\/\/as.americas-society.org\/", "ADRESS1": "680 Park Ave.", "ADDRESS2": null, "CITY": "New York", "ZIP": 10021.0 }, "geometry": { "type": "Point", "coordinates": [-68.60964596271510,-31.648851421965400] } }
+,
+{ "type": "Feature", "id": 8, "properties": { "NAME": "Productores Fruti - Horticolas de las Peñas Blancas La Puntilla", "TEL": "(212) 431-7993", "URL": "http:\/\/www.annefrank.com\/", "ADRESS1": "38 Crosby Street", "ADDRESS2": "5th Floor", "CITY": "New York", "ZIP": 10012.0 }, "geometry": { "type": "Point", "coordinates": [-67.50065043568610,-28.125434713273200] } }
+,
+{ "type": "Feature", "id": 9, "properties": { "NAME": "Producción en Transición Agroecologica en Riacho He He", "TEL": "(212) 288-6400", "URL": "http:\/\/www.asiasociety.org\/", "ADRESS1": "725 Park Avenue", "ADDRESS2": null, "CITY": "New York", "ZIP": 10021.0 }, "geometry": { "type": "Point", "coordinates": [-58.280524257570500,-25.364279752133900] } }
+]
+}
