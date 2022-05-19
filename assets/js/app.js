@@ -1,4 +1,4 @@
-var map, featureList, boroughSearch = [], theaterSearch = [], museumSearch = [];
+var map, featureList, boroughSearch = [], theaterSearch = [], carnesSearch = [], aceitesSearch = [], museumSearch = [];
 
 $(window).resize(function() {
   sizeLayerControl();
@@ -99,6 +99,20 @@ function syncSidebar() {
       }
     }
   });
+  carnes.eachLayer(function (layer) {
+    if (map.hasLayer(theaterLayer)) {
+      if (map.getBounds().contains(layer.getLatLng())) {
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/icons/svg/icon_carnes_huevos.svg"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      }
+    }
+  });
+  aceites.eachLayer(function (layer) {
+    if (map.hasLayer(theaterLayer)) {
+      if (map.getBounds().contains(layer.getLatLng())) {
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/icons/svg/icon_aceites.svg"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      }
+    }
+  });
   /* Loop through museums layer and add only features which are in the map bounds */
   museums.eachLayer(function (layer) {
     if (map.hasLayer(museumLayer)) {
@@ -117,15 +131,16 @@ function syncSidebar() {
 }
 
 /* Basemap Layers */
-
+//
 //var cartoLight = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png?lang=es", {
 //  maxZoom: 19,
 //  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
 //});
-//
-var cartoLight = L.tileLayer('https://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.0/capabaseargenmap@EPSG%3A3857@png/{z}/{x}/{-y}.png', {
+
+var cartoLight = L.tileLayer("https://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.0/capabaseargenmap@EPSG%3A3857@png/{z}/{x}/{y}.png", {
     attribution: '<a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> | <a href="http://www.ign.gob.ar/AreaServicios/Argenmap/IntroduccionV2" target="_blank">Instituto Geográfico Nacional</a> + <a href="http://www.osm.org/copyright" target="_blank">OpenStreetMap</a>',
-      maxZoom: 19,
+      minZoom: 3,
+      maxZoom: 18,
       tms: true
 });
 
@@ -232,11 +247,13 @@ var markerClusters = new L.MarkerClusterGroup({
 
 /* Empty layer placeholder to add to layer control for listening when to add/remove theaters to markerClusters layer */
 var theaterLayer = L.geoJson(null);
+var carnesLayer = L.geoJson(null);
+var aceitesLayer = L.geoJson(null);
 var theaters = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {
       icon: L.icon({
-        iconUrl: "assets/img/fyo.png",
+            iconUrl: "assets/img/icons/svg/icon_artesanias.svg",
         iconSize: [24, 28],
         iconAnchor: [12, 28],
         popupAnchor: [0, -25]
@@ -256,11 +273,83 @@ var theaters = L.geoJson(null, {
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
       });
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/fyo.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/icon/svg/icon_artesanias.svg"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       theaterSearch.push({
         name: layer.feature.properties.NAME,
         address: layer.feature.properties.ADDRESS1,
         source: "Theaters",
+        id: L.stamp(layer),
+        lat: layer.feature.geometry.coordinates[1],
+        lng: layer.feature.geometry.coordinates[0]
+      });
+    }
+  }
+});
+var carnes = L.geoJson(null, {
+  pointToLayer: function (feature, latlng) {
+    return L.marker(latlng, {
+      icon: L.icon({
+        iconUrl: "assets/img/icons/svg/icon_carnes_huevos.svg",
+        iconSize: [24, 28],
+        iconAnchor: [12, 28],
+        popupAnchor: [0, -25]
+      }),
+      title: feature.properties.NAME,
+      riseOnHover: true
+    });
+  },
+  onEachFeature: function (feature, layer) {
+    if (feature.properties) {
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.NAME + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.TEL + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.ADDRESS1 + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.URL + "' target='_blank'>" + feature.properties.URL + "</a></td></tr>" + "<table>";
+      layer.on({
+        click: function (e) {
+          $("#feature-title").html(feature.properties.NAME);
+          $("#feature-info").html(content);
+          $("#featureModal").modal("show");
+          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+        }
+      });
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/icons/svg/icon_carnes_huevos.svg"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      carnesSearch.push({
+        name: layer.feature.properties.NAME,
+        address: layer.feature.properties.ADDRESS1,
+        source: "Carnes",
+        id: L.stamp(layer),
+        lat: layer.feature.geometry.coordinates[1],
+        lng: layer.feature.geometry.coordinates[0]
+      });
+    }
+  }
+});
+var aceites = L.geoJson(null, {
+  pointToLayer: function (feature, latlng) {
+    return L.marker(latlng, {
+      icon: L.icon({
+        iconUrl: "assets/img/icons/svg/icon_aceites.svg",
+        iconSize: [24, 28],
+        iconAnchor: [12, 28],
+        popupAnchor: [0, -25]
+      }),
+      title: feature.properties.NAME,
+      riseOnHover: true
+    });
+  },
+  onEachFeature: function (feature, layer) {
+    if (feature.properties) {
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.NAME + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.TEL + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.ADDRESS1 + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.URL + "' target='_blank'>" + feature.properties.URL + "</a></td></tr>" + "<table>";
+      layer.on({
+        click: function (e) {
+          $("#feature-title").html(feature.properties.NAME);
+          $("#feature-info").html(content);
+          $("#featureModal").modal("show");
+          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+        }
+      });
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/icons/svg/icon_aceites.svg"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      aceitesSearch.push({
+        name: layer.feature.properties.NAME,
+        address: layer.feature.properties.ADDRESS1,
+        source: "Aceites",
         id: L.stamp(layer),
         lat: layer.feature.geometry.coordinates[1],
         lng: layer.feature.geometry.coordinates[0]
@@ -273,13 +362,23 @@ $.getJSON("data/DOITT_THEATER_01_13SEPT2010.geojson", function (data) {
   map.addLayer(theaterLayer);
 });
 
+$.getJSON("data/carnes.geojson", function (data) {
+  carnes.addData(data);
+  map.addLayer(carnesLayer);
+});
+
+$.getJSON("data/aceites.geojson", function (data) {
+  aceites.addData(data);
+  map.addLayer(aceitesLayer);
+});
+
 /* Empty layer placeholder to add to layer control for listening when to add/remove museums to markerClusters layer */
 var museumLayer = L.geoJson(null);
 var museums = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {
       icon: L.icon({
-        iconUrl: "assets/img/vaca.png",
+        iconUrl: "assets/img/icons/svg/icon_bebidas.svg",
         iconSize: [24, 28],
         iconAnchor: [12, 28],
         popupAnchor: [0, -25]
@@ -299,7 +398,7 @@ var museums = L.geoJson(null, {
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
       });
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/vaca.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/icon/svg/icon_bebidas.svg"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       museumSearch.push({
         name: layer.feature.properties.NAME,
         address: layer.feature.properties.ADRESS1,
@@ -316,18 +415,19 @@ $.getJSON("data/DOITT_MUSEUM_01_13SEPT2010.geojson", function (data) {
 });
 
 map = L.map("map", {
-  zoom: 10,
-  center: [40.702222, -73.979378],
-  layers: [cartoLight, boroughs, markerClusters, highlight],
-  zoomControl: false,
+  zoom: 3,
+  center: [-40.702222, -73.979378],
+//  layers: [cartoLight, markerClusters, highlight],
+  zoomControl: true,
   attributionControl: false
 });
+//map.setView([-40, -59], 4);
+//boroughs.addTo(map)
+cartoLight.addTo(map)
+markerClusters.addTo(map)
+//highlight.addTo(map)
 
-L.tileLayer('https://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.0/capabaseargenmap@EPSG%3A3857@png/{z}/{x}/{-y}.png', {
-    attribution: '<a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> | <a href="http://www.ign.gob.ar/AreaServicios/Argenmap/IntroduccionV2" target="_blank">Instituto Geográfico Nacional</a> + <a href="http://www.osm.org/copyright" target="_blank">OpenStreetMap</a>',
-      minZoom: 3,
-      maxZoom: 18
-}).addTo(map);
+map.panTo(new L.LatLng(-40.702222, -73.979378));
 
 /* Layer control listeners that allow for a single markerClusters layer */
 map.on("overlayadd", function(e) {
@@ -335,6 +435,15 @@ map.on("overlayadd", function(e) {
     markerClusters.addLayer(theaters);
     syncSidebar();
   }
+  if (e.layer === carnesLayer) {
+    markerClusters.addLayer(carnes);
+    syncSidebar();
+  }
+  if (e.layer === aceitesLayer) {
+    markerClusters.addLayer(aceites);
+    syncSidebar();
+  }
+
   if (e.layer === museumLayer) {
     markerClusters.addLayer(museums);
     syncSidebar();
@@ -344,6 +453,14 @@ map.on("overlayadd", function(e) {
 map.on("overlayremove", function(e) {
   if (e.layer === theaterLayer) {
     markerClusters.removeLayer(theaters);
+    syncSidebar();
+  }
+  if (e.layer === carnesLayer) {
+    markerClusters.removeLayer(carnes);
+    syncSidebar();
+  }
+  if (e.layer === aceitesLayer) {
+    markerClusters.removeLayer(aceites);
     syncSidebar();
   }
   if (e.layer === museumLayer) {
@@ -432,13 +549,11 @@ var baseLayers = {
 };
 
 var groupedOverlays = {
-  "Puntos de Interés": {
-    "<img src='assets/img/fyo.png' width='24' height='28'>&nbsp;Frutas y Hortalízas": theaterLayer,
-    "<img src='assets/img/vaca.png' width='24' height='28'>&nbsp;Animales": museumLayer
-  },
-  "Reference": {
-    "Boroughs": boroughs,
-    "Subway Lines": subwayLines
+  "Categorías de Productos": {
+    "<img src='assets/img/icons/svg/icon_artesanias.svg' width='24' height='28'>&nbsp;Artesanias": theaterLayer,
+    "<img src='assets/img/icons/svg/icon_bebidas.svg' width='24' height='28'>&nbsp;Bebidas": museumLayer,
+    "<img src='assets/img/icons/svg/icon_carnes_huevos.svg' width='24' height='28'>&nbsp;Carnes y Huevos": carnesLayer,
+    "<img src='assets/img/icons/svg/icon_aceites.svg' width='24' height='28'>&nbsp;Aceites": aceitesLayer
   }
 };
 
@@ -491,6 +606,26 @@ $(document).one("ajaxStop", function () {
     limit: 10
   });
 
+  var carnesBH = new Bloodhound({
+    name: "Carnes",
+    datumTokenizer: function (d) {
+      return Bloodhound.tokenizers.whitespace(d.name);
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    local: carnesSearch,
+    limit: 10
+  });
+
+  var aceitesBH = new Bloodhound({
+    name: "Aceites",
+    datumTokenizer: function (d) {
+      return Bloodhound.tokenizers.whitespace(d.name);
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    local: aceitesSearch,
+    limit: 10
+  });
+
   var museumsBH = new Bloodhound({
     name: "Museums",
     datumTokenizer: function (d) {
@@ -531,10 +666,10 @@ $(document).one("ajaxStop", function () {
     },
     limit: 10
   });
-  boroughsBH.initialize();
-  theatersBH.initialize();
-  museumsBH.initialize();
-  geonamesBH.initialize();
+//  boroughsBH.initialize();
+//  theatersBH.initialize();
+//  museumsBH.initialize();
+//  geonamesBH.initialize();
 
   /* instantiate the typeahead UI */
   $("#searchbox").typeahead({
@@ -553,7 +688,23 @@ $(document).one("ajaxStop", function () {
     displayKey: "name",
     source: theatersBH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'><img src='assets/img/theater.png' width='24' height='28'>&nbsp;Frutas y Hortalízas</h4>",
+      header: "<h4 class='typeahead-header'><img src='assets/img/icons/svg/icon_artesanias.svg' width='24' height='28'>&nbsp;Artesanías</h4>",
+      suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
+    }
+  }, {
+    name: "Carnes",
+    displayKey: "name",
+    source: carnesBH.ttAdapter(),
+    templates: {
+      header: "<h4 class='typeahead-header'><img src='assets/img/icons/svg/icon_carnes.svg' width='24' height='28'>&nbsp;Carnes</h4>",
+      suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
+    }
+  }, {
+    name: "Aceites",
+    displayKey: "name",
+    source: aceitesBH.ttAdapter(),
+    templates: {
+      header: "<h4 class='typeahead-header'><img src='assets/img/icons/svg/icon_aceites.svg' width='24' height='28'>&nbsp;Aceites</h4>",
       suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
     }
   }, {
@@ -561,7 +712,7 @@ $(document).one("ajaxStop", function () {
     displayKey: "name",
     source: museumsBH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'><img src='assets/img/vaca.png' width='24' height='28'>&nbsp;Animales</h4>",
+      header: "<h4 class='typeahead-header'><img src='assets/img/icons/svg/icon_bebidas.svg' width='24' height='28'>&nbsp;Bebidas</h4>",
       suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
     }
   }, {
@@ -578,6 +729,24 @@ $(document).one("ajaxStop", function () {
     if (datum.source === "Theaters") {
       if (!map.hasLayer(theaterLayer)) {
         map.addLayer(theaterLayer);
+      }
+      map.setView([datum.lat, datum.lng], 17);
+      if (map._layers[datum.id]) {
+        map._layers[datum.id].fire("click");
+      }
+    }
+    if (datum.source === "Carnes") {
+      if (!map.hasLayer(carnesLayer)) {
+        map.addLayer(carnesLayer);
+      }
+      map.setView([datum.lat, datum.lng], 17);
+      if (map._layers[datum.id]) {
+        map._layers[datum.id].fire("click");
+      }
+    }
+    if (datum.source === "Aceites") {
+      if (!map.hasLayer(aceitesLayer)) {
+        map.addLayer(aceitesLayer);
       }
       map.setView([datum.lat, datum.lng], 17);
       if (map._layers[datum.id]) {
